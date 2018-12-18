@@ -1,6 +1,8 @@
 import java.util.Random;
 import java.math.BigInteger;
 import java.util.Vector;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class Podpis {
     private BigInteger p;
@@ -9,6 +11,8 @@ public class Podpis {
     private BigInteger h;
     private BigInteger S1;
     private BigInteger S2;
+    private BigInteger H;
+
     private byte[] tekstJawny;
 
     public Podpis(byte[] tekstJawny) {
@@ -24,21 +28,24 @@ public class Podpis {
         do {
             g = new BigInteger(1023, rnd);
         }
-        while (!g.modPow(p.subtract(BigInteger.ONE).divide(TWO), p).equals(BigInteger.ONE) && !g.modPow(p.subtract(BigInteger.ONE).divide(q), p).equals(BigInteger.ONE));
+        while (g.modPow(p.subtract(BigInteger.ONE).divide(TWO), p).equals(BigInteger.ONE) || g.modPow(p.subtract(BigInteger.ONE).divide(q), p).equals(BigInteger.ONE));
         a = new BigInteger(1023, rnd);
+        h=g.modPow(a,p);
     }
 
     public void genPodpis(){
-        BigInteger H=Hashysh(tekstJawny); //- hashujemy tekst jawny funkcja hashujaca
+        H=hash(); //- hashujemy tekst jawny funkcja hashujaca
         BigInteger r;
         Random rnd=new Random();
         do{
             r=new BigInteger(1023,rnd);
-        }while (r.gcd(p.subtract(BigInteger.ONE)).equals(BigInteger.ONE));
+        }while (!r.gcd(p.subtract(BigInteger.ONE)).equals(BigInteger.ONE));
         S1=g.modPow(r,p);
         BigInteger rPrim=chinol(p.subtract(BigInteger.ONE),r).mod(p.subtract(BigInteger.ONE));
-        S2=(H.subtract(a.multiply(S1))).multiply(rPrim).mod(p.subtract(BigInteger.ONE));
+        BigInteger pom=H.subtract(a.multiply(S1));
+        S2=pom.multiply(rPrim).mod(p.subtract(BigInteger.ONE));
     }
+
     BigInteger getS1()
     {
         return S1;
@@ -47,6 +54,41 @@ public class Podpis {
     {
         return S2;
     }
+    BigInteger getP()
+    {
+        return p;
+    }
+    BigInteger getG()
+    {
+        return g;
+    }
+    BigInteger getH()
+    {
+        return h;
+    }
+    BigInteger getA()
+    {
+        return a;
+    }
+
+    public boolean zweryfikuj(){
+        if(S1.compareTo(BigInteger.valueOf(0))!=1 && S1.compareTo(p)!=-1)
+        {
+            System.out.println("jeden");
+            return false;
+        }
+        BigInteger v=h.modPow(S1,p).multiply(S1.modPow(S2,p));
+        v=v.mod(p);
+        System.out.println("V: "+v);
+        System.out.println("to drugie: "+ g.modPow(H,p));
+        if(g.modPow(H,p).compareTo(v)!=0)
+        {
+
+            return false;
+        }
+        return true;
+    }
+
 
 
     public BigInteger chinol(BigInteger pMin1, BigInteger r) {
@@ -105,5 +147,15 @@ public class Podpis {
         return v;
 
     }
+    BigInteger hash()
+    {
+        MessageDigest hash=null;
+        try{
+            hash=MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e){System.err.println("zly algorytm");}
+        BigInteger H = new BigInteger(hash.digest(tekstJawny));
+        return H;
+    }
 
 }
+
