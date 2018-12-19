@@ -17,7 +17,18 @@ public class Weryfikacja {
         this.S1=S1;
         this.S2=S2;
     }
+    public boolean zweryfikuj(){
+        if(S1.compareTo(BigInteger.valueOf(0))!=1 && S1.compareTo(p)!=-1)
+        {
+            return false;
+        }
+        BigInteger v=h.modPow(S1,p).multiply(S1.modPow(S2,p));
+        v=v.mod(p);
 
-
-
+        if(g.modPow(H,p).compareTo(v)!=0)
+        {
+            return false;
+        }
+        return true;
+    }
 }

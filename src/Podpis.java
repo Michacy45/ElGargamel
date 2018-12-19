@@ -71,39 +71,11 @@ public class Podpis {
         return a;
     }
 
-    public boolean zweryfikuj(){
-        if(S1.compareTo(BigInteger.valueOf(0))!=1 && S1.compareTo(p)!=-1)
-        {
-            System.out.println("jeden");
-            return false;
-        }
-        BigInteger v=h.modPow(S1,p).multiply(S1.modPow(S2,p));
-        v=v.mod(p);
-        System.out.println("V: "+v);
-        System.out.println("to drugie: "+ g.modPow(H,p));
-        if(g.modPow(H,p).compareTo(v)!=0)
-        {
-
-            return false;
-        }
-        return true;
-    }
-
-
-
     public BigInteger chinol(BigInteger pMin1, BigInteger r) {
 
         BigInteger d = new BigInteger(String.valueOf(pMin1));
         BigInteger e = new BigInteger(String.valueOf(r));
         BigInteger u, v;
-
-        /*if(d.compareTo(e) == -1)
-        {
-            BigInteger pom;
-            pom = d;
-            d = e;
-            e = pom;
-        }*/
 
         Vector<BigInteger> P = new Vector<>();
         Vector<BigInteger> Q = new Vector<>();
@@ -141,13 +113,10 @@ public class Podpis {
         }
 
         BigInteger[] result = new BigInteger[2];
-        //result = p.multiply(u).multiply(b).subtract(this.q.multiply(v).multiply(a)).mod(n);
-        /*result[0]=u;
-        result[1]=v;*/
         return v;
 
     }
-    BigInteger hash()
+    public BigInteger hash()
     {
         MessageDigest hash=null;
         try{
