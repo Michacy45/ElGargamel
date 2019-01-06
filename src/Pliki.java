@@ -45,6 +45,7 @@ public class Pliki {
             kluczyk.println(p);
             kluczyk.println(g);
             kluczyk.println(h);
+            //kluczyk.println(H);
         }catch (FileNotFoundException e){ System.out.println("Nie ma takiego pliku");}
     }
 

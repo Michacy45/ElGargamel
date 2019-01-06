@@ -31,19 +31,26 @@ public class Podpis {
         while (g.modPow(p.subtract(BigInteger.ONE).divide(TWO), p).equals(BigInteger.ONE) || g.modPow(p.subtract(BigInteger.ONE).divide(q), p).equals(BigInteger.ONE));
         a = new BigInteger(1023, rnd);
         h=g.modPow(a,p);
+        H=hash();
     }
 
     public void genPodpis(){
-        H=hash(); //- hashujemy tekst jawny funkcja hashujaca
+        //- hashujemy tekst jawny funkcja hashujaca
         BigInteger r;
         Random rnd=new Random();
         do{
             r=new BigInteger(1023,rnd);
         }while (!r.gcd(p.subtract(BigInteger.ONE)).equals(BigInteger.ONE));
         S1=g.modPow(r,p);
-        BigInteger rPrim=chinol(p.subtract(BigInteger.ONE),r).mod(p.subtract(BigInteger.ONE));
+        BigInteger rPrim=euklides(p.subtract(BigInteger.ONE),r).mod(p.subtract(BigInteger.ONE));
         BigInteger pom=H.subtract(a.multiply(S1));
         S2=pom.multiply(rPrim).mod(p.subtract(BigInteger.ONE));
+        /*System.out.println("P:" + p);
+        System.out.println("g:" + g);
+        System.out.println("h:" + h);
+        System.out.println("s1:" + S1);
+        System.out.println("s2:" + S2);
+        System.out.println("H:" + H);*/
     }
 
     BigInteger getS1()
@@ -66,12 +73,16 @@ public class Podpis {
     {
         return h;
     }
+    BigInteger getHash()
+    {
+        return H;
+    }
     BigInteger getA()
     {
         return a;
     }
 
-    public BigInteger chinol(BigInteger pMin1, BigInteger r) {
+    public BigInteger euklides(BigInteger pMin1, BigInteger r) {
 
         BigInteger d = new BigInteger(String.valueOf(pMin1));
         BigInteger e = new BigInteger(String.valueOf(r));
